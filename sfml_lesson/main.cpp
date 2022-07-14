@@ -1,119 +1,141 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <vector>
+//#include <vector>
+#include <list>
 
-void sh_m(sf::CircleShape* shape)
+
+int main()
 {
-    sf::Vector2f p_sh;
-    while (true)
-    {
-        //sf::sleep(sf::milliseconds(100));
-        shape->move(0.1, 0);
-        std::cout << "shape.move\n";
-        p_sh = shape->getPosition();
-        if (p_sh.x > 850)
-            shape->setPosition(50, 150);
-     }
-}
+    sf::RenderWindow window(sf::VideoMode(900, 900), "SFML works!",sf::Style::Titlebar|sf::Style::Close);
+    window.setFramerateLimit(120);
+    sf::Vector2u win_size = window.getSize();
+
+    // Snake
+    sf::Vector2f snake_head_size{ 10, 10 };
+    sf::RectangleShape snake_head(snake_head_size);
+    snake_head.setPosition(450, 450);
+    snake_head.setFillColor(sf::Color::Green);
+    sf::Vector2f snake_head_coor;
+    
+
+    std::list<sf::RectangleShape> snake;
+    sf::Vector2f snake_coor;
+    sf::RectangleShape snake_neck;
+    sf::Vector2f snake_neck_coor;
+
+    //backgound for a snake
+    sf::Vector2f background_s_size{ 600, 600 };
+    sf::RectangleShape background_s(background_s_size);
+    background_s.setPosition(100, 150);
+    background_s.setFillColor(sf::Color::Black);
+    sf::Vector2f  background_s_coor = background_s.getPosition();
+
+        
+    sf::Time time = sf::seconds(0.125f);
+    std::srand(std::time(0));
+    
+    int x, y, i; // temp variory
+    i = 0;
+    int step[] = {0, -10, 10};
+    bool rigth = false, left = false, up = false, down = false, m = false;
 
 
-void sh_m1(sf::CircleShape* shape)
-{
-    while (true)
-    {
-        sf::sleep(sf::milliseconds(100));
-        shape->move(0.11, 0);
-        std::cout << "\t\tSHAPE1.MOVE\n";
-      
-    }
-}
-
-void n_w()
-{
-    sf::RenderWindow window(sf::VideoMode(300, 300), "Seconds window!");
-    window.setFramerateLimit(1);
-    int i = 0;
     while (window.isOpen())
     {
+        do
+        {
+            x = rand() % 3;
+            y = rand() % 3;
+        } while (x == 0 && y == 0);
+        
+        if (x == 0 && y == 0) // check: don't move
+        {
+            std::cout << "\tSTOP MOVE" << std::endl;
+            continue;
+        }
+        
         sf::Event event;
-        //sf::Thread t_e([&]()
-        //    {
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
 
         }
-        
-        std::vector<sf::Color> vc = {sf::Color::Black, sf::Color::Blue, sf::Color::Cyan, sf::Color::Green, sf::Color::Magenta, sf::Color::Red, sf::Color::White, sf::Color::Yellow};
-        
-        if (i == vc.size())
-            i = 0;
 
-        window.clear(vc[i]);
+        snake_head_coor = snake_head.getPosition();
 
-        ++i;
-
-        window.display();
-        
-    }
-    
-}
-
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(900, 900), "SFML works!");
-    window.setFramerateLimit(120);
-    sf::CircleShape shape(50.f);
-    shape.setFillColor(sf::Color::Green);
-    shape.setOrigin(50, 50);
-    shape.setPosition(50, 150);
-
-    sf::CircleShape shape1(50.f);
-    shape1.setFillColor(sf::Color::Red);
-    shape1.setOrigin(50, 50);
-    shape1.setPosition(50, 350);
-
-    sf::Thread t_sh(&sh_m,&shape);
-    sf::Thread t_sh1(&sh_m1, &shape1);
-    sf::Thread t_nw1(&n_w);
-
-    int i = 0, k = 0, h = 0;
-
-    t_sh.launch();
-
-    t_sh1.launch();
-
-    t_nw1.launch();
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-             {
-                 if (event.type == sf::Event::Closed)
-                     window.close();
-
-             }
+        if (snake.size())
+        {
+            snake_neck_coor = snake_neck.getPosition();
             
-        i += 10;
-        k += 5;
-        h = i + k;
-        if (i > 255)
-            i == 0;
-        if (k > 255)
-            k == 0;
-        if (h > 255)
-            h == 0;
-       
-               
-        window.clear(sf::Color(i,k,h));
+            if (x)
+            {
+                y = 0;
+                if (snake_head_coor.x + step[x] >= background_s_coor.x && snake_head_coor.x + step[x] <= background_s_coor.x + background_s_size.x - snake_head_size.x)
+                {
+                    if (snake_neck_coor.x != snake_head_coor.x + step[x])
+                    {
+                        snake_neck = snake_head;
+                        snake_neck.setFillColor(sf::Color::Red);
+                        snake.push_back(sf::RectangleShape(snake_neck));
+                        snake_head.move(step[x], step[y]);
+                    }
+                    else continue;
+                }
+                else continue;
+            }
+            if (y)
+            {
+                x = 0;
+                if (snake_head_coor.y + step[y] >= background_s_coor.y && snake_head_coor.y + step[y] <= background_s_coor.y + background_s_size.y - snake_head_size.x)
+                {
+                    if (snake_neck_coor.y != snake_head_coor.y + step[y])
+                    {
+                        snake_neck = snake_head;
+                        snake_neck.setFillColor(sf::Color::Red);
+                        snake.push_back(sf::RectangleShape(snake_neck));
+                        snake_head.move(step[x], step[y]);
+                    }
+                    else continue;
+                }
+                else continue;
+            }
+        }
+        else
+        {
+            if (x)//gorizont move
+            {
+                y = 0;
+                snake_neck = snake_head;
+                snake_neck.setFillColor(sf::Color::Red);
+                snake.push_back(sf::RectangleShape(snake_neck));
+                snake_head.move(step[x], step[y]);
+            }
+            if (y)//vertical move
+            {
+                x = 0;
+                snake_neck = snake_head;
+                snake_neck.setFillColor(sf::Color::Red);
+                snake.push_back(sf::RectangleShape(snake_neck));
+                snake_head.move(step[x], step[y]);
+            }
+        }
+        
+        if (snake.size() == 10)
+            snake.pop_front();
 
-        window.draw(shape);
-        window.draw(shape1);
+        window.clear(sf::Color::White);
+
+        window.draw(background_s);
+        for (auto i : snake)
+            window.draw(i);
+        window.draw(snake_head);
 
         window.display();
-        
+
+        std::cout << "MOVE" << std::endl;
+        //sf::sleep(time);
+               
     }
 
     return 0;
