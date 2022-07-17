@@ -37,7 +37,7 @@ int main()
     int x, y, i; // temp variory
     i = 0;
     int step[] = {0, -10, 10};
-    bool rigth = false, left = false, up = false, down = false, m = false;
+    bool rigth = false, left = false, up = false, down = false, m = true;
 
 
     while (window.isOpen())
@@ -63,7 +63,7 @@ int main()
         }
 
         snake_head_coor = snake_head.getPosition();
-
+        m = true;
         if (snake.size())
         {
             snake_neck_coor = snake_neck.getPosition();
@@ -73,8 +73,18 @@ int main()
                 y = 0;
                 if (snake_head_coor.x + step[x] >= background_s_coor.x && snake_head_coor.x + step[x] <= background_s_coor.x + background_s_size.x - snake_head_size.x)
                 {
-                    if (snake_neck_coor.x != snake_head_coor.x + step[x])
+                    //std::cout << "MOVE to X" << std::endl;
+                    for (auto i = snake.rbegin(); i != snake.rend(); i++)
                     {
+                        snake_neck_coor = i->getPosition();
+                        if (snake_neck_coor.x == snake_head_coor.x + step[x] && snake_neck_coor.y == snake_head_coor.y + step[y])
+                        {
+                            m = false;
+                        }
+                    }
+                    if (m)//(snake_neck_coor.x != snake_head_coor.x + step[x])
+                    {
+                        std::cout << "MOVE to X" << std::endl;
                         snake_neck = snake_head;
                         snake_neck.setFillColor(sf::Color::Red);
                         snake.push_back(sf::RectangleShape(snake_neck));
@@ -89,8 +99,18 @@ int main()
                 x = 0;
                 if (snake_head_coor.y + step[y] >= background_s_coor.y && snake_head_coor.y + step[y] <= background_s_coor.y + background_s_size.y - snake_head_size.x)
                 {
-                    if (snake_neck_coor.y != snake_head_coor.y + step[y])
+                    //std::cout << "MOVE to Y" << std::endl;
+                    for (auto i = snake.rbegin(); i != snake.rend(); i++)
                     {
+                        snake_neck_coor = i->getPosition();
+                        if (snake_neck_coor.x == snake_head_coor.x + step[x] && snake_neck_coor.y == snake_head_coor.y + step[y])
+                        {
+                            m = false;
+                        }
+                    }
+                    if (m)//(snake_neck_coor.y != snake_head_coor.y + step[y])
+                    {
+                        std::cout << "\tMOVE to Y" << std::endl;
                         snake_neck = snake_head;
                         snake_neck.setFillColor(sf::Color::Red);
                         snake.push_back(sf::RectangleShape(snake_neck));
@@ -133,8 +153,15 @@ int main()
 
         window.display();
 
-        std::cout << "MOVE" << std::endl;
-        //sf::sleep(time);
+
+        /*td::vector<int> v{ 1,2,3,4,5,6,7,8,9,0 };
+        
+        for (auto i = v.rbegin(); i != v.rend(); i++)
+            std::cout << *i << "\t";
+        std::cout << std::endl;*/
+
+        //std::cout << "MOVE" << std::endl;
+        sf::sleep(time);
                
     }
 
