@@ -4,7 +4,7 @@
 #include <list>
 
 //sf::Mutex mutex;
-int k = 0; // temp variory
+int k = 0; // temp variables
 int step[] = { 0, -10, 10 };
 bool m = true;
 
