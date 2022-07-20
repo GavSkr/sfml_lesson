@@ -61,10 +61,8 @@ int main()
     int step[] = {0, -10, 10};
     bool rigth = false, left = false, up = false, down = false, m = true;
 
-  
     //Theard
-    sf::Thread snake_thread(std::bind(&snake_move, snake_head, snake, background_s, x, y, time));
-        
+    sf::Thread snake_thread(std::bind(snake_move, snake_head, snake, background_s, x, y, time));
 
     while (window.isOpen())
     {
@@ -95,6 +93,7 @@ int main()
         }
 
         //snake_move(snake_head, snake, background_s, x, y, time);
+        std::cout << "In main(): x = " << x << " and " << "y = " << y << std::endl;
         snake_thread.launch();
         
 

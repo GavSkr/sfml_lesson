@@ -19,6 +19,8 @@ sf::Vector2f background_s_size;
 void snake_move(sf::RectangleShape &snake_head, std::list<sf::RectangleShape> &snake, sf::RectangleShape &background_s, int x, int y, sf::Time& time)
 {
     //mutex.lock();
+    std::cout << "In snake_move(): x = " << x << " and " << "y = " << y << std::endl;
+    
     sf::sleep(time);
     
     snake_head_size = snake_head.getSize();
