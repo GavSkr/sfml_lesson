@@ -1,114 +1,120 @@
-#include "snake.h"
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <list>
+#include "Snake.h"
 
-//sf::Mutex mutex;
-int k = 0; // temp variables
-int step[] = { 0, -10, 10 };
-bool m = true;
-
-sf::Vector2f snake_head_size;
-sf::Vector2f snake_coor;
-sf::RectangleShape snake_neck;
-sf::Vector2f snake_neck_coor;
-sf::Vector2f snake_head_coor;
-sf::Vector2f background_s_coor;
-sf::Vector2f background_s_size;
-
-void snake_move(sf::RectangleShape &snake_head, std::list<sf::RectangleShape> &snake, sf::RectangleShape &background_s, int x, int y, sf::Time& time)
+Snake::Snake(const int x, const int y)
 {
-    //mutex.lock();
-    std::cout << "In snake_move(): x = " << x << " and " << "y = " << y << std::endl;
-    
-    sf::sleep(time);
-    
-    snake_head_size = snake_head.getSize();
-    snake_head_coor = snake_head.getPosition();
-    sf::Vector2f  background_s_coor = background_s.getPosition();
-    sf::Vector2f background_s_size = background_s.getSize();
-    m = true;
-    if (snake.size())
-    {
-        snake_neck_coor = snake_neck.getPosition();
-
-        if (x)
-        {
-            y = 0;
-            if (snake_head_coor.x + step[x] >= background_s_coor.x && snake_head_coor.x + step[x] <= background_s_coor.x + background_s_size.x - snake_head_size.x)
-            {
-                //std::cout << "MOVE to X" << std::endl;
-                k = 0;
-                for (auto i = snake.rbegin(); k <= 4 && i != snake.rend(); i++, ++k)
-                {
-                    snake_neck_coor = i->getPosition();
-                    if (snake_neck_coor.x == snake_head_coor.x + step[x] && snake_neck_coor.y == snake_head_coor.y + step[y])
-                    {
-                        m = false;
-                    }
-                }
-
-                if (m)//(snake_neck_coor.x != snake_head_coor.x + step[x])
-                {
-
-                    std::cout << "MOVE to X" << std::endl;
-                    snake_neck = snake_head;
-                    snake_neck.setFillColor(sf::Color::Red);
-                    snake.push_back(sf::RectangleShape(snake_neck));
-                    snake_head.move(step[x], step[y]);
-                }
-                else return;
-            }
-            else return;
-        }
-        if (y)
-        {
-            x = 0;
-            if (snake_head_coor.y + step[y] >= background_s_coor.y && snake_head_coor.y + step[y] <= background_s_coor.y + background_s_size.y - snake_head_size.x)
-            {
-                //std::cout << "MOVE to Y" << std::endl;
-                k = 0;
-                for (auto i = snake.rbegin(); k <= 4 && i != snake.rend(); i++, ++k)
-                {
-                    snake_neck_coor = i->getPosition();
-                    if (snake_neck_coor.x == snake_head_coor.x + step[x] && snake_neck_coor.y == snake_head_coor.y + step[y])
-                    {
-                        m = false;
-                    }
-                }
-
-                if (m)//(snake_neck_coor.y != snake_head_coor.y + step[y])
-                {
-                    std::cout << "\tMOVE to Y" << std::endl;
-                    snake_neck = snake_head;
-                    snake_neck.setFillColor(sf::Color::Red);
-                    snake.push_back(sf::RectangleShape(snake_neck));
-                    snake_head.move(step[x], step[y]);
-                }
-                else return;
-            }
-            else return;
-        }
-    }
-    else
-    {
-        if (x)//gorizont move
-        {
-            y = 0;
-            snake_neck = snake_head;
-            snake_neck.setFillColor(sf::Color::Red);
-            snake.push_back(sf::RectangleShape(snake_neck));
-            snake_head.move(step[x], step[y]);
-        }
-        if (y)//vertical move
-        {
-            x = 0;
-            snake_neck = snake_head;
-            snake_neck.setFillColor(sf::Color::Red);
-            snake.push_back(sf::RectangleShape(snake_neck));
-            snake_head.move(step[x], step[y]);
-        }
-    }
-
-
+	head.setSize({ 10, 10 });
+	head.setFillColor(sf::Color::Green);
+	head.setPosition(x, y);
 }
+
+sf::Vector2f Snake::getSize_head()
+{
+	return this->head.getSize();
+}
+
+sf::Vector2f Snake::getPosition_head()
+{
+	return this->head.getPosition();
+}
+
+void Snake::setPosition_snake(const sf::Vector2f position)
+{
+	sf::Vector2f h_p = head.getPosition();
+	if(position.x >= 0 && position.y >= 0)
+		head.setPosition(position);
+	else
+		head.setPosition(0, 0);
+	if (body.size())
+		for (auto i : body)
+			i.setPosition(i.getPosition().x + (position.x-h_p.x), i.getPosition().y + (position.y - h_p.y));
+}
+
+void Snake::setPosition_snake(const float x, const float y)
+{
+	sf::Vector2f h_p = head.getPosition();
+	if (x >= 0 && y >= 0)
+		head.setPosition(x, y);
+	else
+		head.setPosition(0, 0);
+	if (body.size())
+		for (auto i : body)
+			i.setPosition(i.getPosition().x + (x - h_p.x), i.getPosition().y + (y - h_p.y));
+}
+
+void Snake::grow(const int x, const int y)
+{
+	if (check_move(x, y))
+	{
+		sf::RectangleShape snake_neck = head;
+		snake_neck.setFillColor(sf::Color::Red);
+		body.push_back(snake_neck);
+		head.setPosition(head.getPosition().x + step[x], head.getPosition().y + step[y]);
+	}
+	if (body.size() == 10)
+		body.pop_front();
+}
+
+void Snake::move(const int x, const int y)
+{
+	if (live == 10)
+	{
+		grow(x, y);
+		live = 0;
+	}
+	else
+	{
+		if (check_move(x, y))
+		{
+			++live;
+			if (body.size())
+			{
+				sf::Vector2f snake_neck_coor;
+				sf::Vector2f snake_neck_coor_new = body.back().getPosition();
+				for (auto i = body.rbegin(); i != body.rend(); i++)
+				{
+					snake_neck_coor = i->getPosition();
+					if (i->getPosition() == body.back().getPosition())
+						i->setPosition(head.getPosition());
+					else
+						i->setPosition(snake_neck_coor_new);
+					snake_neck_coor_new = snake_neck_coor;
+				}
+				head.setPosition(head.getPosition().x + step[x], head.getPosition().y + step[y]);
+			}
+			else
+				head.setPosition(head.getPosition().x + step[x], head.getPosition().y + step[y]);
+		}
+	}
+}
+
+bool Snake::check_move(const int x, const int y)
+{
+	if (body.size())
+	{
+		int k = 0;
+		for (auto i = body.rbegin(); k <= 4 && i != body.rend(); i++, ++k)
+		{
+			if (i->getPosition().x == head.getPosition().x + step[x] && i->getPosition().y == head.getPosition().y + step[y])//(snake_neck_coor.x == snake_head_coor.x + step[x] && snake_neck_coor.y == snake_head_coor.y + step[y])
+				return false;
+		}
+	}
+	return true;
+}
+
+std::list <sf::RectangleShape> Snake::get_body()
+{
+	return this->body;
+}
+
+sf::RectangleShape Snake::get_head()
+{
+	return this->head;
+}
+
+void Snake::set_time(const float time, const float t)
+{
+	if (time < 0 || t < 0)
+		this->time = 0.f;
+	this->time = time * t;
+}
+
