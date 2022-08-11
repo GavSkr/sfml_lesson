@@ -30,4 +30,20 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\sansation.ttf">
+      <Filter>Файлы ресурсов</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\food.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\map.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="images\icon.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
