@@ -72,8 +72,6 @@ void Snake::grow()
 		body.push_back(snake_neck);
 		head.setPosition(head.getPosition().x + x, head.getPosition().y + y);
 	}
-	//if (body.size() == 10)
-	//	body.pop_front();
 }
 
 int Snake::size()
@@ -95,18 +93,8 @@ void Snake::move_auto(const int x, const int y)
 			++live;
 			if (body.size())
 			{
-				sf::Vector2f snake_neck_coor;
-				sf::Vector2f snake_neck_coor_new = body.back().getPosition();
-				for (auto i = body.rbegin(); i != body.rend(); i++)
-				{
-					snake_neck_coor = i->getPosition();
-					if (i->getPosition() == body.back().getPosition())
-						i->setPosition(head.getPosition());
-					else
-						i->setPosition(snake_neck_coor_new);
-					snake_neck_coor_new = snake_neck_coor;
-				}
-				head.setPosition(head.getPosition().x + step[x], head.getPosition().y + step[y]);
+				grow();
+				body.pop_front();
 			}
 			else
 				head.setPosition(head.getPosition().x + step[x], head.getPosition().y + step[y]);
@@ -118,18 +106,8 @@ void Snake::move_auto()
 {
 	if (body.size())
 	{
-		sf::Vector2f snake_neck_coor;
-		sf::Vector2f snake_neck_coor_new = body.back().getPosition();
-		for (auto i = body.rbegin(); i != body.rend(); i++)
-		{
-			snake_neck_coor = i->getPosition();
-			if (i->getPosition() == body.back().getPosition())
-				i->setPosition(head.getPosition());
-			else
-				i->setPosition(snake_neck_coor_new);
-			snake_neck_coor_new = snake_neck_coor;
-		}
-		head.setPosition(head.getPosition().x + x, head.getPosition().y + y);
+		grow();
+		body.pop_front();
 	}
 	else
 		head.setPosition(head.getPosition().x + x, head.getPosition().y + y);
@@ -141,18 +119,8 @@ void Snake::move_manual(const int x, const int y)
 	this->y = y;
 	if (body.size())
 	{
-		sf::Vector2f snake_neck_coor;
-		sf::Vector2f snake_neck_coor_new = body.back().getPosition();
-		for (auto i = body.rbegin(); i != body.rend(); i++)
-		{
-			snake_neck_coor = i->getPosition();
-			if (i->getPosition() == body.back().getPosition())
-				i->setPosition(head.getPosition());
-			else
-				i->setPosition(snake_neck_coor_new);
-			snake_neck_coor_new = snake_neck_coor;
-		}
-		head.setPosition(head.getPosition().x + x, head.getPosition().y + y);
+		grow();
+		body.pop_front();
 	}
 	else
 		head.setPosition(head.getPosition().x + x, head.getPosition().y + y);
@@ -202,12 +170,12 @@ bool Snake::check_move_m(const int x, const int y)
 
 std::list <sf::RectangleShape> Snake::get_body()
 {
-	return this->body;
+	return body;
 }
 
 sf::RectangleShape Snake::get_head()
 {
-	return this->head;
+	return head;
 }
 
 void Snake::set_time(const float time, const float t)

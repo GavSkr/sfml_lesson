@@ -91,7 +91,7 @@ int main()
     //food
     sf::Image food_image;
     food_image.loadFromFile("images\\food.png");
-    food_image.createMaskFromColor(sf::Color::Black);
+    //food_image.createMaskFromColor(sf::Color::Black);
     sf::Texture food_texture;
     food_texture.loadFromImage(food_image);
     if (!food_texture.loadFromImage(food_image))
@@ -176,6 +176,11 @@ int main()
             up = false;
             down = false;
             s.move_manual(0, -10);
+        }
+
+        if (window.hasFocus() && sf::Keyboard::isKeyPressed(sf::Keyboard::G))
+        {
+            s.grow();
         }
         
         s.move_auto();
@@ -299,26 +304,25 @@ int main()
         window.draw(copy1_Text);
         window.draw(copy2_Text);
 
-        for (int i = 0; i < HEIGHT_MAP; i++)
-            for (int j = 0; j < WIDTH_MAP; j++)
-            {
-                if (TileMap[i][j] == ' ')  map_s.setTextureRect(sf::IntRect(0, 0, 32, 32)); //если встретили символ пробел, то рисуем 1й квадратик
-                if (TileMap[i][j] == 's')  map_s.setTextureRect(sf::IntRect(32, 0, 32, 32));//если встретили символ s, то рисуем 2й квадратик
-                if ((TileMap[i][j] == '0')) map_s.setTextureRect(sf::IntRect(64, 0, 32, 32));//если встретили символ 0, то рисуем 3й квадратик
+        //for (int i = 0; i < HEIGHT_MAP; i++)
+        //    for (int j = 0; j < WIDTH_MAP; j++)
+        //    {
+        //        if (TileMap[i][j] == ' ')  map_s.setTextureRect(sf::IntRect(0, 0, 32, 32)); //если встретили символ пробел, то рисуем 1й квадратик
+        //        if (TileMap[i][j] == 's')  map_s.setTextureRect(sf::IntRect(32, 0, 32, 32));//если встретили символ s, то рисуем 2й квадратик
+        //        if ((TileMap[i][j] == '0')) map_s.setTextureRect(sf::IntRect(64, 0, 32, 32));//если встретили символ 0, то рисуем 3й квадратик
 
 
-                map_s.setPosition(j * 32 + 68, i * 32 + 125);//по сути раскидывает квадратики, превращая в карту. то есть задает каждому из них позицию. если убрать, то вся карта нарисуется в одном квадрате 32*32 и мы увидим один квадрат
+        //        map_s.setPosition(j * 32 + 68, i * 32 + 125);//по сути раскидывает квадратики, превращая в карту. то есть задает каждому из них позицию. если убрать, то вся карта нарисуется в одном квадрате 32*32 и мы увидим один квадрат
 
-                window.draw(map_s);//рисуем квадратики на экран
-            }
+        //        window.draw(map_s);//рисуем квадратики на экран
+        //    }
 
-        //window.draw(background_s);
+        window.draw(background_s);
         
         window.draw(food_s);
 
-        for (auto i: s.get_body())//(auto i = s.get_snake().rbegin(); i != s.get_snake().rend(); i++)
+        for (auto i: s.get_body())
             window.draw(i);
-
 
         window.draw(s.get_head());
 
